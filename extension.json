@@ -27,6 +27,24 @@
 			"editglobalinterface"
 		]
 	},
+	"namespaces": [
+		{
+			"id": 1730,
+			"constant": "NS_GLOBAL_MESSAGE",
+			"name": "Global_message",
+			"protection": "editglobalinterface",
+			"defaultcontentmodel": "wikitext",
+			"subpages": true,
+			"conditional": true
+		},
+		{
+			"id": 1731,
+			"constant": "NS_GLOBAL_MESSAGE_TALK",
+			"name": "Global_message_talk",
+			"subpages": true,
+			"conditional": true
+		}
+	],
 	"AutoloadNamespaces": {
 		"MediaWiki\\Extension\\GlobalMessages\\": "src/"
 	},
@@ -34,8 +52,15 @@
 		"src/ServiceWiring.php"
 	],
 	"HookHandlers": {
+        "NamespaceHooks": {
+            "class": "MediaWiki\\Extension\\GlobalMessages\\Hooks\\NamespaceHooks",
+			"services": [
+				"MainConfig"
+			]
+        }
 	},
 	"Hooks": {
+		"CanonicalNamespaces": "NamespaceHooks"
 	},
 	"config_prefix": "wgGlobalMessages",
 	"config": {},
