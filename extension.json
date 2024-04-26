@@ -1,7 +1,6 @@
 {
 	"name": "GlobalMessages",
 	"version": "1.0.0",
-
 	"author": [
 		"alex4401"
 	],
@@ -9,34 +8,36 @@
 	"descriptionmsg": "globalmsg-desc",
 	"license-name": "GPL-3.0-or-later",
 	"type": "other",
-
 	"requires": {
 		"MediaWiki": ">= 1.39.0",
 		"platform": {
 			"php": ">= 8.1"
 		}
 	},
-
 	"MessagesDirs": {
 		"GlobalMessages.class": [
 			"i18n"
 		]
 	},
-
+	"AvailableRights": [
+		"editglobalinterface"
+	],
+	"GroupPermissions": {
+		"bureaucrat": [
+			"editglobalinterface"
+		]
+	},
 	"AutoloadNamespaces": {
 		"MediaWiki\\Extension\\GlobalMessages\\": "src/"
 	},
 	"ServiceWiringFiles": [
 		"src/ServiceWiring.php"
 	],
-
 	"HookHandlers": {
 	},
 	"Hooks": {
 	},
-
 	"config_prefix": "wgGlobalMessages",
 	"config": {},
-
 	"manifest_version": 2
 }

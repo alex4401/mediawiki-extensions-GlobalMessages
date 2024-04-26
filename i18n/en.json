@@ -4,5 +4,7 @@
             "alex4401"
         ]
     },
-    "globalmsg-desc": "Introduces global interface message management from a central wiki."
+    "globalmsg-desc": "Introduces global interface message management from a central wiki.",
+    "right-editglobalinterface": "Edit global interface messages",
+    "action-editglobalinterface": "edit global default interface messages"
 }
