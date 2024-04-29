@@ -1,0 +1,43 @@
+[
+    {
+        "name": "global_messages_cache",
+		"columns": [
+			{
+				"name": "gmc_page_id",
+				"comment": "ID of the global message page",
+				"type": "integer",
+				"options": { "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "gmc_name",
+				"comment": "Message name as text.",
+				"type": "binary",
+				"options": { "notnull": true, "length": 255 }
+			},
+			{
+				"name": "gmc_lang",
+				"comment": "Message language",
+				"type": "binary",
+				"options": { "notnull": true, "length": 35 }
+			},
+			{
+				"name": "gmc_text",
+				"type": "blob",
+				"options": { "notnull": true, "length": 65530 }
+			}
+        ],
+		"indexes": [
+			{
+				"name": "gmc_by_page",
+				"columns": [ "gmc_page_id" ],
+				"unique": true
+			},
+			{
+				"name": "gmc_by_lang",
+				"columns": [ "gmc_lang" ],
+				"unique": true
+			}
+		],
+		"pk": [ "gmc_page_id" ]
+    }
+]
