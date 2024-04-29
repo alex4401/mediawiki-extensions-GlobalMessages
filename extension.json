@@ -23,9 +23,9 @@
 		"editglobalinterface"
 	],
 	"GroupPermissions": {
-		"bureaucrat": [
-			"editglobalinterface"
-		]
+		"bureaucrat": {
+			"editglobalinterface": true
+		}
 	},
 	"namespaces": [
 		{
