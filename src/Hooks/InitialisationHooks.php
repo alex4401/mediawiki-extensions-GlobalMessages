@@ -31,12 +31,14 @@ final class InitialisationHooks implements
      * @return void
      */
     public function onCanonicalNamespaces( &$namespaces ) {
-        if ( $this->mainConfig->get( 'GlobalMessagesCentralWiki' ) === WikiMap::getCurrentWikiId() ) {
-            $namespaces[NS_GLOBAL_MESSAGE] = 'Global_message';
-            $namespaces[NS_GLOBAL_MESSAGE_TALK] = 'Global_message_talk';
+        if ( $this->mainConfig->get( 'GlobalMessagesCentralWiki' ) !== WikiMap::getCurrentWikiId() ) {
+            return;
         }
-
+        
         global $wgNamespaceRobotPolicies;
+
+        $namespaces[NS_GLOBAL_MESSAGE] = 'Global_message';
+        $namespaces[NS_GLOBAL_MESSAGE_TALK] = 'Global_message_talk';
         $wgNamespaceRobotPolicies[NS_GLOBAL_MESSAGE] = 'noindex,follow';
         $wgNamespaceRobotPolicies[NS_GLOBAL_MESSAGE_TALK] = 'noindex,follow';
     }
