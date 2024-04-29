@@ -57,10 +57,21 @@
 			"services": [
 				"MainConfig"
 			]
-        }
+        },
+        "MessageCacheHooks": {
+            "class": "MediaWiki\\Extension\\GlobalMessages\\Hooks\\MessageCacheHooks",
+			"services": [
+				"GlobalMessages.Registry"
+			]
+        },
+		"UpdaterHooks": {
+			"class": "MediaWiki\\Extension\\GlobalMessages\\Hooks\\UpdaterHooks"
+		}
 	},
 	"Hooks": {
 		"CanonicalNamespaces": "InitialisationHooks",
+		"MessagesPreLoad": "MessageCacheHooks",
+		"LoadExtensionSchemaUpdates": "UpdaterHooks",
 		"SetupAfterCache": "InitialisationHooks"
 	},
 	"config_prefix": "wgGlobalMessages",
