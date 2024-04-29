@@ -63,23 +63,32 @@ class GlobalMessageRegistry {
         return null;
     }
 
+    private function getCacheKey(): string {
+        return $this->wanObjectCache->makeGlobalKey(
+            'global-messages',
+            self::CACHE_GENERATION,
+            $this->options->get( 'GlobalMessagesCentralWiki' )
+        );
+    }
+
     private function loadMessages(): void {
         if ( $this->processCache !== null ) {
             return;
         }
 
-        $centralWiki = $this->options->get( 'GlobalMessagesCentralWiki' );
-        $key = $this->wanObjectCache->makeGlobalKey( 'global-messages', self::CACHE_GENERATION, $centralWiki );
+        $key = $this->getCacheKey();
 
         $srvCache = ObjectCache::getLocalServerInstance( 'hash' );
         $this->processCache = $srvCache->getWithSetCallback(
             $key,
             self::LOCAL_CACHE_TTL,
-            function () use ( $key, $centralWiki ) {
+            function () use ( $key ) {
                 return $this->wanObjectCache->getWithSetCallback(
                     $key,
                     self::SHARED_CACHE_TTL,
-                    function ( $old, &$ttl, &$setOpts ) use ( $centralWiki ) {
+                    function ( $old, &$ttl, &$setOpts ) {
+                        $centralWiki = $this->options->get( 'GlobalMessagesCentralWiki' );
+
                         $dbr = $this->dbLoadBalancerFactory
                             ->getMainLB( $centralWiki )
                             ->getConnection( DB_REPLICA, [], $centralWiki );
@@ -115,5 +124,13 @@ class GlobalMessageRegistry {
                 );
             }
         );
+    }
+
+    public function purgeCache(): void {
+        $srvCache = ObjectCache::getLocalServerInstance( 'hash' );
+
+        $key = $this->getCacheKey();
+        $srvCache->delete( $key );
+        $this->wanObjectCache->delete( $key );
     }
 }
