@@ -52,15 +52,16 @@
 		"src/ServiceWiring.php"
 	],
 	"HookHandlers": {
-        "NamespaceHooks": {
-            "class": "MediaWiki\\Extension\\GlobalMessages\\Hooks\\NamespaceHooks",
+        "InitialisationHooks": {
+            "class": "MediaWiki\\Extension\\GlobalMessages\\Hooks\\InitialisationHooks",
 			"services": [
 				"MainConfig"
 			]
         }
 	},
 	"Hooks": {
-		"CanonicalNamespaces": "NamespaceHooks"
+		"CanonicalNamespaces": "InitialisationHooks",
+		"SetupAfterCache": "InitialisationHooks"
 	},
 	"config_prefix": "wgGlobalMessages",
 	"config": {

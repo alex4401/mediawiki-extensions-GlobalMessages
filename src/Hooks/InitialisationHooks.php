@@ -2,12 +2,10 @@
 namespace MediaWiki\Extension\GlobalMessages\Hooks;
 
 use Config;
-use MediaWiki\MainConfigNames;
 use WikiMap;
 
-// @phpcs:disable MediaWiki.NamingConventions.LowerCamelFunctionsName.FunctionName
-
-final class NamespaceHooks implements
+final class InitialisationHooks implements
+    \MediaWiki\Hook\SetupAfterCacheHook,
     \MediaWiki\Hook\CanonicalNamespacesHook
 {
     /** @var Config */
@@ -20,14 +18,20 @@ final class NamespaceHooks implements
         $this->mainConfig = $mainConfig;
     }
 
+    public function onSetupAfterCache() {
+        global $wgGlobalMessagesCentralWiki;
+    
+        if ( $wgGlobalMessagesCentralWiki === false ) {
+            $wgGlobalMessagesCentralWiki = WikiMap::getCurrentWikiId();
+        }
+    }
+
     /**
-     * Registers Map namespace if configured so (default behaviour). Sets the robot policy if namespace ID is 2900.
-     *
      * @param string[] &$namespaces
      * @return void
      */
     public function onCanonicalNamespaces( &$namespaces ) {
-        if ( $this->mainConfig->get( MainConfigNames::SharedDB ) === WikiMap::getCurrentWikiId() ) {
+        if ( $this->mainConfig->get( 'GlobalMessagesCentralWiki' ) === WikiMap::getCurrentWikiId() ) {
             $namespaces[NS_GLOBAL_MESSAGE] = 'Global_message';
             $namespaces[NS_GLOBAL_MESSAGE_TALK] = 'Global_message_talk';
         }
