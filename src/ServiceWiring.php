@@ -13,6 +13,7 @@ return [
                 GlobalMessageRegistry::CONSTRUCTOR_OPTIONS,
                 $services->getMainConfig()
             ),
+            $services->getDBLoadBalancerFactory(),
             $services->getMainWANObjectCache()
         );
     },

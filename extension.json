@@ -63,6 +63,14 @@
 		"CanonicalNamespaces": "NamespaceHooks"
 	},
 	"config_prefix": "wgGlobalMessages",
-	"config": {},
+	"config": {
+		"CentralWiki": {
+			"value": false,
+			"description": "Wiki ID of global message management wiki."
+		},
+		"ReadFromDb": {
+			"value": false
+		}
+	},
 	"manifest_version": 2
 }
