@@ -3,9 +3,12 @@ namespace MediaWiki\Extension\GlobalMessages;
 
 use WANObjectCache;
 use MediaWiki\Config\ServiceOptions;
+use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\RevisionLookup;
 use ObjectCache;
 use Wikimedia\Rdbms\Database;
+use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactory;
 use Wikimedia\Rdbms\LoadBalancer;
@@ -27,12 +30,14 @@ class GlobalMessageRegistry {
 
     /** @var ServiceOptions */
     private ServiceOptions $options;
-
     /** @var LBFactory */
     private LBFactory $dbLoadBalancerFactory;
-
     /** @var WANObjectCache */
     private WANObjectCache $wanObjectCache;
+    /** @var ServiceOptions */
+    private LanguageNameUtils $languageNameUtils;
+    /** @var ServiceOptions */
+    private RevisionLookup $revisionLookup;
 
     /** @var ?array */
     private ?array $processCache = null;
@@ -40,12 +45,16 @@ class GlobalMessageRegistry {
     public function __construct(
         ServiceOptions $options,
         LBFactory $dbLoadBalancerFactory,
-        WANObjectCache $wanObjectCache
+        WANObjectCache $wanObjectCache,
+        LanguageNameUtils $languageNameUtils,
+        RevisionLookup $revisionLookup
     ) {
         $options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
         $this->options = $options;
         $this->dbLoadBalancerFactory = $dbLoadBalancerFactory;
         $this->wanObjectCache = $wanObjectCache;
+        $this->languageNameUtils = $languageNameUtils;
+        $this->revisionLookup = $revisionLookup;
     }
 
     /**
@@ -71,6 +80,13 @@ class GlobalMessageRegistry {
         );
     }
 
+    private function getDatabaseConnectionRef( int $index ): IDatabase {
+        $centralWiki = $this->options->get( 'GlobalMessagesCentralWiki' );
+        return $this->dbLoadBalancerFactory
+            ->getMainLB( $centralWiki )
+            ->getConnection( $index, [], $centralWiki );
+    }
+
     private function loadMessages(): void {
         if ( $this->processCache !== null ) {
             return;
@@ -87,11 +103,7 @@ class GlobalMessageRegistry {
                     $key,
                     self::SHARED_CACHE_TTL,
                     function ( $old, &$ttl, &$setOpts ) {
-                        $centralWiki = $this->options->get( 'GlobalMessagesCentralWiki' );
-
-                        $dbr = $this->dbLoadBalancerFactory
-                            ->getMainLB( $centralWiki )
-                            ->getConnection( DB_REPLICA, [], $centralWiki );
+                        $dbr = $this->getDatabaseConnectionRef( DB_REPLICA );
                         $setOpts += Database::getCacheSetOptions( $dbr );
 
                         $rows = $dbr->newSelectQueryBuilder()
@@ -135,6 +147,11 @@ class GlobalMessageRegistry {
     }
 
     public function createUpdater(): GlobalMessageUpdater {
-        return new GlobalMessageUpdater( $this );
+        return new GlobalMessageUpdater(
+            $this,
+            $this->languageNameUtils,
+            $this->revisionLookup,
+            $this->getDatabaseConnectionRef( DB_PRIMARY )
+        );
     }
 }
