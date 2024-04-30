@@ -133,4 +133,8 @@ class GlobalMessageRegistry {
         $srvCache->delete( $key );
         $this->wanObjectCache->delete( $key );
     }
+
+    public function createUpdater(): GlobalMessageUpdater {
+        return new GlobalMessageUpdater( $this );
+    }
 }
