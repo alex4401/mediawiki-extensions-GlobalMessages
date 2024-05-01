@@ -58,6 +58,13 @@
 				"MainConfig"
 			]
         },
+        "PageHooks": {
+            "class": "MediaWiki\\Extension\\GlobalMessages\\Hooks\\PageHooks",
+			"services": [
+				"MainConfig",
+				"GlobalMessages.Registry"
+			]
+        },
         "MessageCacheHooks": {
             "class": "MediaWiki\\Extension\\GlobalMessages\\Hooks\\MessageCacheHooks",
 			"services": [
@@ -72,7 +79,11 @@
 		"CanonicalNamespaces": "InitialisationHooks",
 		"MessagesPreLoad": "MessageCacheHooks",
 		"LoadExtensionSchemaUpdates": "UpdaterHooks",
-		"SetupAfterCache": "InitialisationHooks"
+		"SetupAfterCache": "InitialisationHooks",
+		"PageDeleteComplete": "PageHooks",
+		"ArticleUndelete": "PageHooks",
+		"PageSaveComplete": "PageHooks",
+		"PageMoveComplete": "PageHooks"
 	},
 	"config_prefix": "wgGlobalMessages",
 	"config": {
