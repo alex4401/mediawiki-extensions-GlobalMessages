@@ -3,6 +3,7 @@ namespace MediaWiki\Extension\GlobalMessages;
 
 use Language;
 use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionLookup;
 use MediaWiki\Revision\SlotRecord;
 use TextContent;
@@ -19,6 +20,9 @@ class GlobalMessageUpdater {
     /** @var IDatabase */
     private IDatabase $dbw;
 
+    /** @var array[] */
+    private array $messageCachePurges;
+
     public function __construct(
         GlobalMessageRegistry $registry,
         LanguageNameUtils $languageUtils,
@@ -29,6 +33,7 @@ class GlobalMessageUpdater {
         $this->languageUtils = $languageUtils;
         $this->revisionLookup = $revisionLookup;
         $this->dbw = $dbw;
+        $this->messageCachePurges = [];
     }
 
     public function insert( int $pageId ): GlobalMessageUpdater {
@@ -68,6 +73,8 @@ class GlobalMessageUpdater {
             __METHOD__
         );
 
+        $this->messageCachePurges[] = [ $title, $content ];
+
         return $this;
     }
 
@@ -84,5 +91,10 @@ class GlobalMessageUpdater {
 
     public function finalise(): void {
         $this->registry->purgeCache();
+
+        $msgCache = MediaWikiServices::getInstance()->getMessageCache();
+        foreach ( $this->messageCachePurges as $pending ) {
+            $msgCache->updateMessageOverride( $pending[0], $pending[1] );
+        }
     }
 }
