@@ -168,6 +168,7 @@ class GlobalMessageRegistry {
         $srvCache = ObjectCache::getLocalServerInstance( 'hash' );
 
         $key = $this->getCacheKey();
+        $this->processCache = null;
         $srvCache->delete( $key );
         $this->wanObjectCache->delete( $key );
     }
