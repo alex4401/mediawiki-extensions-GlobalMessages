@@ -56,16 +56,16 @@ class GlobalMessageUpdater {
         $pageText = ( $content instanceof TextContent ) ? $content->getText() : '';
 
         // Update the database
-        $set = [
-            'gmc_name' => $pageName,
-            'gmc_lang' => $pageLang,
-            'gmc_text' => $pageText,
-        ];
-        $this->dbw->upsert(
+        $this->delete( $pageId );
+        $this->dbw->insert(
             'global_messages_cache',
-            [ 'gmc_page_id' => $pageId ] + $set,
-            'gmc_page_id',
-            $set
+            [
+                'gmc_page_id' => $pageId,
+                'gmc_name' => $pageName,
+                'gmc_lang' => $pageLang,
+                'gmc_text' => $pageText,
+            ],
+            __METHOD__
         );
 
         return $this;
