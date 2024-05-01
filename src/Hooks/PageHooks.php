@@ -59,7 +59,7 @@ final class PageHooks implements
 		ManualLogEntry $logEntry,
 		int $archivedRevisionCount
 	) {
-        if ( !$this->isCentralWiki() ) {
+        if ( !$this->isCentralWiki() || $page->getNamespace() !== NS_GLOBAL_MESSAGE ) {
             return;
         }
 
@@ -82,7 +82,7 @@ final class PageHooks implements
 	public function onArticleUndelete( $title, $create, $comment, $oldPageId,
 		$restoredPages
 	) {
-        if ( !$this->isCentralWiki() ) {
+        if ( !$this->isCentralWiki() || $title->getNamespace() !== NS_GLOBAL_MESSAGE ) {
             return;
         }
 
@@ -111,7 +111,7 @@ final class PageHooks implements
 		$revisionRecord,
 		$editResult
 	) {
-        if ( !$this->isCentralWiki() ) {
+        if ( !$this->isCentralWiki() || $wikiPage->getNamespace() !== NS_GLOBAL_MESSAGE ) {
             return;
         }
 
@@ -134,7 +134,7 @@ final class PageHooks implements
 	public function onPageMoveComplete( $old, $new, $user, $pageid, $redirid,
 		$reason, $revision
 	) {
-        if ( !$this->isCentralWiki() ) {
+        if ( !$this->isCentralWiki() || $new->getNamespace() !== NS_GLOBAL_MESSAGE ) {
             return;
         }
 
