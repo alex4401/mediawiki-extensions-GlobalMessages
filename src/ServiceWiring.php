@@ -14,7 +14,11 @@ return [
                 $services->getMainConfig()
             ),
             $services->getDBLoadBalancerFactory(),
-            $services->getMainWANObjectCache()
+            $services->getMainWANObjectCache(),
+            $services->getLanguageNameUtils(),
+            $services->getLanguageFactory(),
+            $services->getLanguageConverterFactory(),
+            $services->getRevisionLookup()
         );
     },
 ];

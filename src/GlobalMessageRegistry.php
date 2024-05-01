@@ -3,6 +3,8 @@ namespace MediaWiki\Extension\GlobalMessages;
 
 use WANObjectCache;
 use MediaWiki\Config\ServiceOptions;
+use MediaWiki\Languages\LanguageConverterFactory;
+use MediaWiki\Languages\LanguageFactory;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionLookup;
@@ -25,7 +27,7 @@ class GlobalMessageRegistry {
     ];
 
     public const CACHE_GENERATION = 1;
-    public const LOCAL_CACHE_TTL = 10 * 60;
+    public const LOCAL_CACHE_TTL = 1 * 60;
     public const SHARED_CACHE_TTL = 72 * 60 * 60;
 
     /** @var ServiceOptions */
@@ -34,9 +36,13 @@ class GlobalMessageRegistry {
     private LBFactory $dbLoadBalancerFactory;
     /** @var WANObjectCache */
     private WANObjectCache $wanObjectCache;
-    /** @var ServiceOptions */
+    /** @var LanguageNameUtils */
     private LanguageNameUtils $languageNameUtils;
-    /** @var ServiceOptions */
+    /** @var LanguageFactory */
+    private LanguageFactory $languageFactory;
+    /** @var LanguageConverterFactory */
+    private LanguageConverterFactory $languageConverterFactory;
+    /** @var RevisionLookup */
     private RevisionLookup $revisionLookup;
 
     /** @var ?array */
@@ -47,6 +53,8 @@ class GlobalMessageRegistry {
         LBFactory $dbLoadBalancerFactory,
         WANObjectCache $wanObjectCache,
         LanguageNameUtils $languageNameUtils,
+        LanguageFactory $languageFactory,
+        LanguageConverterFactory $languageConverterFactory,
         RevisionLookup $revisionLookup
     ) {
         $options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
@@ -54,6 +62,8 @@ class GlobalMessageRegistry {
         $this->dbLoadBalancerFactory = $dbLoadBalancerFactory;
         $this->wanObjectCache = $wanObjectCache;
         $this->languageNameUtils = $languageNameUtils;
+        $this->languageFactory = $languageFactory;
+        $this->languageConverterFactory = $languageConverterFactory;
         $this->revisionLookup = $revisionLookup;
     }
 
@@ -69,7 +79,23 @@ class GlobalMessageRegistry {
 
         $this->loadMessages();
 
-        return null;
+        $langObj = $this->languageFactory->getLanguage( $language );
+        $codes = [
+            $language,
+            $this->languageConverterFactory->getLanguageConverter( $langObj )->getDefaultVariant(),
+            '*',
+        ];
+
+        $msg = null;
+        foreach ( $codes as $code ) {
+            if ( array_key_exists( $code, $this->processCache ) ) {
+                if ( $msg = ( $this->processCache[$code][$msgName] ?? null ) ) {
+                    break;
+                }
+            }
+        }
+
+        return $msg;
     }
 
     private function getCacheKey(): string {
@@ -125,7 +151,7 @@ class GlobalMessageRegistry {
                             if ( !array_key_exists( $language, $results ) ) {
                                 $results[$language] = [];
                             }
-                            $results[$row->gmc_name] = $row->gmc_text;
+                            $results[$language][$row->gmc_name] = $row->gmc_text;
                         }
 
                         return $results;
