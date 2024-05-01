@@ -8,6 +8,5 @@ CREATE TABLE /*_*/global_messages_cache (
   gmc_lang VARBINARY(35) NOT NULL,
   gmc_text BLOB NOT NULL,
   UNIQUE INDEX gmc_by_page (gmc_page_id),
-  UNIQUE INDEX gmc_by_lang (gmc_lang),
   PRIMARY KEY(gmc_page_id)
 ) /*$wgDBTableOptions*/;

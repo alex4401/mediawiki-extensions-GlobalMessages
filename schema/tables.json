@@ -31,11 +31,6 @@
 				"name": "gmc_by_page",
 				"columns": [ "gmc_page_id" ],
 				"unique": true
-			},
-			{
-				"name": "gmc_by_lang",
-				"columns": [ "gmc_lang" ],
-				"unique": true
 			}
 		],
 		"pk": [ "gmc_page_id" ]
