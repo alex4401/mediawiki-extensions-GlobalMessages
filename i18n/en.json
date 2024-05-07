@@ -6,5 +6,8 @@
     },
     "globalmsg-desc": "Introduces global interface message management from a central wiki.",
     "right-editglobalinterface": "Edit global interface messages",
-    "action-editglobalinterface": "edit global default interface messages"
+    "action-editglobalinterface": "edit global default interface messages",
+    "grant-editglobalinterface": "Edit global interface messages",
+    "group-global-interface-admin": "Global interface administrators",
+    "group-global-interface-admin-member": "Global interface administrator"
 }

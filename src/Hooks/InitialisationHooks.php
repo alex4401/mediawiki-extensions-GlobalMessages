@@ -8,6 +8,10 @@ final class InitialisationHooks implements
     \MediaWiki\Hook\SetupAfterCacheHook,
     \MediaWiki\Hook\CanonicalNamespacesHook
 {
+    private const GRANT_ID = 'editglobalinterface';
+    private const RIGHT_ID = 'editglobalinterface';
+    private const GROUP_ID = 'editglobalinterface';
+
     /** @var Config */
     private Config $mainConfig;
 
@@ -19,10 +23,23 @@ final class InitialisationHooks implements
     }
 
     public function onSetupAfterCache() {
-        global $wgGlobalMessagesCentralWiki;
+        global $wgGlobalMessagesCentralWiki,
+            $wgGroupPermissions,
+            $wgAddGroups,
+            $wgGrantPermissions,
+            $wgGrantRiskGroups,
+            $wgGrantPermissionGroups;
     
         if ( $wgGlobalMessagesCentralWiki === false ) {
             $wgGlobalMessagesCentralWiki = WikiMap::getCurrentWikiId();
+        }
+
+        if ( WikiMap::getCurrentWikiId() === $wgGlobalMessagesCentralWiki ) {
+            $wgAddGroups['bureaucrat'][] = self::GROUP_ID;
+            $wgGroupPermissions[self::GROUP_ID][self::RIGHT_ID] = true;
+            $wgGrantPermissionGroups[self::GRANT_ID] = 'administration';
+            $wgGrantRiskGroups[self::GRANT_ID] = 'security';
+            $wgGrantPermissions[self::GRANT_ID] = [ self::RIGHT_ID ];
         }
     }
 
