@@ -73,6 +73,9 @@
         },
 		"UpdaterHooks": {
 			"class": "MediaWiki\\Extension\\GlobalMessages\\Hooks\\UpdaterHooks"
+		},
+		"EditorHooks": {
+			"class": "MediaWiki\\Extension\\GlobalMessages\\Hooks\\EditorHooks"
 		}
 	},
 	"Hooks": {
@@ -83,7 +86,8 @@
 		"PageDeleteComplete": "PageHooks",
 		"ArticleUndelete": "PageHooks",
 		"PageSaveComplete": "PageHooks",
-		"PageMoveComplete": "PageHooks"
+		"PageMoveComplete": "PageHooks",
+		"EditFormPreloadText": "EditorHooks"
 	},
 	"config_prefix": "wgGlobalMessages",
 	"config": {
