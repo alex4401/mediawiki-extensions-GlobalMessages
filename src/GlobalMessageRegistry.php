@@ -89,7 +89,10 @@ class GlobalMessageRegistry {
         $msg = null;
         foreach ( $codes as $code ) {
             if ( array_key_exists( $code, $this->processCache ) ) {
-                if ( $msg = ( $this->processCache[$code][$msgName] ?? null ) ) {
+                if (
+                    $msg = ( $this->processCache[$code][$msgName] ?? $this->processCache[$code]["$msgName/$code"]
+                        ?? null )
+                ) {
                     break;
                 }
             }
