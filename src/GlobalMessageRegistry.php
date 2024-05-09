@@ -5,6 +5,7 @@ use WANObjectCache;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Languages\LanguageConverterFactory;
 use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Languages\LanguageFallback;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionLookup;
@@ -38,10 +39,8 @@ class GlobalMessageRegistry {
     private WANObjectCache $wanObjectCache;
     /** @var LanguageNameUtils */
     private LanguageNameUtils $languageNameUtils;
-    /** @var LanguageFactory */
-    private LanguageFactory $languageFactory;
-    /** @var LanguageConverterFactory */
-    private LanguageConverterFactory $languageConverterFactory;
+    /** @var LanguageFallback */
+    private LanguageFallback $languageFallback;
     /** @var RevisionLookup */
     private RevisionLookup $revisionLookup;
 
@@ -53,8 +52,7 @@ class GlobalMessageRegistry {
         LBFactory $dbLoadBalancerFactory,
         WANObjectCache $wanObjectCache,
         LanguageNameUtils $languageNameUtils,
-        LanguageFactory $languageFactory,
-        LanguageConverterFactory $languageConverterFactory,
+        LanguageFallback $languageFallback,
         RevisionLookup $revisionLookup
     ) {
         $options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
@@ -62,8 +60,7 @@ class GlobalMessageRegistry {
         $this->dbLoadBalancerFactory = $dbLoadBalancerFactory;
         $this->wanObjectCache = $wanObjectCache;
         $this->languageNameUtils = $languageNameUtils;
-        $this->languageFactory = $languageFactory;
-        $this->languageConverterFactory = $languageConverterFactory;
+        $this->languageFallback = $languageFallback;
         $this->revisionLookup = $revisionLookup;
     }
 
@@ -79,10 +76,9 @@ class GlobalMessageRegistry {
 
         $this->loadMessages();
 
-        $langObj = $this->languageFactory->getLanguage( $language );
         $codes = [
             $language,
-            $this->languageConverterFactory->getLanguageConverter( $langObj )->getDefaultVariant(),
+            ...( $this->languageFallback->getAll( $language, LanguageFallback::MESSAGES ) ),
             '*',
         ];
 

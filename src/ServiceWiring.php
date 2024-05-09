@@ -16,8 +16,7 @@ return [
             $services->getDBLoadBalancerFactory(),
             $services->getMainWANObjectCache(),
             $services->getLanguageNameUtils(),
-            $services->getLanguageFactory(),
-            $services->getLanguageConverterFactory(),
+            $services->getLanguageFallback(),
             $services->getRevisionLookup()
         );
     },
