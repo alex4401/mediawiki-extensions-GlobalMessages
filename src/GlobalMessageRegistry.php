@@ -82,13 +82,16 @@ class GlobalMessageRegistry {
             '*',
         ];
 
+        $suffix = "/$language";
+        $suffixLen = strlen( $suffix );
+        if ( substr( $msgName, -$suffixLen ) === $suffix ) {
+            $msgName = substr( $msgName, 0, -$suffixLen );
+        }
+
         $msg = null;
         foreach ( $codes as $code ) {
             if ( array_key_exists( $code, $this->processCache ) ) {
-                if (
-                    $msg = ( $this->processCache[$code][$msgName] ?? $this->processCache[$code]["$msgName/$code"]
-                        ?? null )
-                ) {
+                if ( $msg = ( $this->processCache[$code][$msgName] ?? null ) ) {
                     break;
                 }
             }
