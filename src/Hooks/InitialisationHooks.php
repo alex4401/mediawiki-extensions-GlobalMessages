@@ -10,7 +10,7 @@ final class InitialisationHooks implements
 {
     private const GRANT_ID = 'editglobalinterface';
     private const RIGHT_ID = 'editglobalinterface';
-    private const GROUP_ID = 'editglobalinterface';
+    private const GROUP_ID = 'global-interface-admin';
 
     /** @var Config */
     private Config $mainConfig;
