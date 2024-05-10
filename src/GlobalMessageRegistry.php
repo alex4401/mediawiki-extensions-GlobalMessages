@@ -78,7 +78,7 @@ class GlobalMessageRegistry {
 
         $codes = [
             $language,
-            ...( $this->languageFallback->getAll( $language, LanguageFallback::MESSAGES ) ),
+            ...( $this->languageFallback->getAll( $language, LanguageFallback::STRICT ) ),
             '*',
         ];
 
