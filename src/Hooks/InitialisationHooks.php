@@ -28,7 +28,8 @@ final class InitialisationHooks implements
             $wgAddGroups,
             $wgGrantPermissions,
             $wgGrantRiskGroups,
-            $wgGrantPermissionGroups;
+            $wgGrantPermissionGroups,
+            $wgPrivilegedGroups;
     
         if ( $wgGlobalMessagesCentralWiki === false ) {
             $wgGlobalMessagesCentralWiki = WikiMap::getCurrentWikiId();
@@ -40,6 +41,7 @@ final class InitialisationHooks implements
             $wgGrantPermissionGroups[self::GRANT_ID] = 'administration';
             $wgGrantRiskGroups[self::GRANT_ID] = 'security';
             $wgGrantPermissions[self::GRANT_ID] = [ self::RIGHT_ID ];
+            $wgPrivilegedGroups[] = self::GROUP_ID;
         }
     }
 
