@@ -37,6 +37,7 @@ final class InitialisationHooks implements
 
         if ( WikiMap::getCurrentWikiId() === $wgGlobalMessagesCentralWiki ) {
             $wgAddGroups['bureaucrat'][] = self::GROUP_ID;
+            $wgGroupPermissions[self::GROUP_ID]['edit'] = true;
             $wgGroupPermissions[self::GROUP_ID][self::RIGHT_ID] = true;
             $wgGrantPermissionGroups[self::GRANT_ID] = 'administration';
             $wgGrantRiskGroups[self::GRANT_ID] = 'security';
