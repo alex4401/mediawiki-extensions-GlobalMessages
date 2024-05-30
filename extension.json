@@ -75,7 +75,11 @@
 			"class": "MediaWiki\\Extension\\GlobalMessages\\Hooks\\UpdaterHooks"
 		},
 		"EditorHooks": {
-			"class": "MediaWiki\\Extension\\GlobalMessages\\Hooks\\EditorHooks"
+			"class": "MediaWiki\\Extension\\GlobalMessages\\Hooks\\EditorHooks",
+			"services": [
+				"MessageCache",
+				"GlobalMessages.Registry"
+			]
 		}
 	},
 	"Hooks": {

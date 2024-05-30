@@ -3,6 +3,8 @@ namespace MediaWiki\Extension\GlobalMessages\Hooks;
 
 use EditPage;
 use Html;
+use MediaWiki\Extension\GlobalMessages\GlobalMessageRegistry;
+use MessageCache;
 use OutputPage;
 use Title;
 
@@ -10,6 +12,17 @@ final class EditorHooks implements
     \MediaWiki\Hook\EditFormPreloadTextHook,
     \MediaWiki\Hook\EditPage__showEditForm_initialHook
 {
+    private MessageCache $messageCache;
+    private GlobalMessageRegistry $globalMsgRegistry;
+
+    public function __construct(
+        MessageCache $messageCache,
+        GlobalMessageRegistry $globalMsgRegistry
+    ) {
+        $this->messageCache = $messageCache;
+        $this->globalMsgRegistry = $globalMsgRegistry;
+    }
+
     /**
      * @param string &$text Text to preload with
      * @param Title $title Page being created
@@ -20,6 +33,14 @@ final class EditorHooks implements
             $msg = wfMessage( $title->getText() );
             if ( $msg && !$msg->isDisabled() ) {
                 $text = $msg->plain();
+            }
+        }
+
+        if ( $title->getNamespace() === NS_MEDIAWIKI ) {
+            [ $msgName, $lang ] = $this->messageCache->figureMessage( $title->getText() );
+            $msg = $this->globalMsgRegistry->resolve( $msgName, $lang );
+            if ( $msg ) {
+                $text = $msg;
             }
         }
     }
