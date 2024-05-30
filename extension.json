@@ -87,7 +87,8 @@
 		"ArticleUndelete": "PageHooks",
 		"PageSaveComplete": "PageHooks",
 		"PageMoveComplete": "PageHooks",
-		"EditFormPreloadText": "EditorHooks"
+		"EditFormPreloadText": "EditorHooks",
+		"EditPage__showEditForm_initial": "EditorHooks"
 	},
 	"config_prefix": "wgGlobalMessages",
 	"config": {
