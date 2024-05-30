@@ -9,5 +9,5 @@
     "action-editglobalinterface": "edit global default interface messages",
     "grant-editglobalinterface": "Edit global interface messages",
     "group-global-interface-admin": "Global interface administrators",
-    "group-global-interface-admin-member": "Global interface administrator"
+    "group-global-interface-admin-member": "global interface administrator"
 }
