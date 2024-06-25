@@ -1,0 +1,14 @@
+{
+    "@metadata": {
+        "authors": [
+            "DarkGames26"
+        ]
+    },
+    "globalmsg-desc": "Introduce la gestión global de mensajes de la interfaz desde un wiki central.",
+    "right-editglobalinterface": "Editar mensajes de interfaz de la red",
+    "action-editglobalinterface": "editar mensajes de interfaz por defecto para toda la red",
+    "grant-editglobalinterface": "Editar mensajes de interfaz de la red",
+    "group-global-interface-admin": "Administradores de interfaz globales",
+    "group-global-interface-admin-member": "administrador de interfaz global",
+    "globalmsg-onmsgedit": "Estás editando un mensaje global del sistema; esto afectará a TODOS los wikis de la red en un plazo de dos horas desde el momento en que guardes los cambios. Por favor, comprueba si esto es lo deseado, y si el idioma para el que estás editando este mensaje es correcto."
+}
