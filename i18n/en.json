@@ -8,7 +8,7 @@
     "right-editglobalinterface": "Edit network-wide interface messages",
     "action-editglobalinterface": "edit network-wide default interface messages",
     "grant-editglobalinterface": "Edit network-wide interface messages",
-    "group-global-interface-admin": "Global interface administrators",
-    "group-global-interface-admin-member": "global interface administrator",
+    "group-global-interface-admin": "Global message administrators",
+    "group-global-interface-admin-member": "global message administrator",
     "globalmsg-onmsgedit": "You're editing a global system message; this will affect ALL wikis on the network within two hours from the moment you save your changes. Please check whether this is desired, and whether the language you're editing this message for is correct."
 }
