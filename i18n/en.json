@@ -10,5 +10,6 @@
     "grant-editglobalinterface": "Edit network-wide interface messages",
     "group-global-interface-admin": "Global message administrators",
     "group-global-interface-admin-member": "global message administrator",
-    "globalmsg-onmsgedit": "You're editing a global system message; this will affect ALL wikis on the network within two hours from the moment you save your changes. Please check whether this is desired, and whether the language you're editing this message for is correct."
+    "globalmsg-onmsgedit": "You're editing a global system message; this will affect ALL wikis on the network within two hours from the moment you save your changes. Please check whether this is desired, and whether the language you're editing this message for is correct.",
+    "globalmsg-protected": "You cannot perform this action to this interface message page. $1"
 }

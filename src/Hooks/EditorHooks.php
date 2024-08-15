@@ -4,13 +4,16 @@ namespace MediaWiki\Extension\GlobalMessages\Hooks;
 use EditPage;
 use Html;
 use MediaWiki\Extension\GlobalMessages\GlobalMessageRegistry;
+use MediaWiki\User\User;
 use MessageCache;
+use MessageSpecifier;
 use OutputPage;
 use Title;
 
 final class EditorHooks implements
     \MediaWiki\Hook\EditFormPreloadTextHook,
-    \MediaWiki\Hook\EditPage__showEditForm_initialHook
+    \MediaWiki\Hook\EditPage__showEditForm_initialHook,
+    \MediaWiki\Permissions\Hook\GetUserPermissionsErrorsHook
 {
     private MessageCache $messageCache;
     private GlobalMessageRegistry $globalMsgRegistry;
@@ -58,4 +61,31 @@ final class EditorHooks implements
 	public function onEditPage__showEditForm_initial( $editor, $out ) {
         $out->addHTML( Html::warningBox( wfMessage( 'globalmsg-onmsgedit' ) ) );
     }
+
+	/**
+	 * Implement local system message locking via globalmsg-protected-messages.
+	 *
+	 * @param Title $title Title being checked against
+	 * @param User $user Current user
+	 * @param string $action Action being checked
+	 * @param array|string|MessageSpecifier &$result User permissions error to add. If none, return true.
+	 *   For consistency, error messages should be plain text with no special coloring,
+	 *   bolding, etc. to show that they're errors; presenting them properly to the
+	 *   user as errors is done by the caller.
+	 * @return bool|void True or no return value to continue or false to abort
+	 */
+	public function onGetUserPermissionsErrors( $title, $user, $action, &$result ) {
+        if ( $action === 'read' || $title->getNamespace() !== NS_GLOBAL_MESSAGE ) {
+            return true;
+        }
+
+		$reason = $this->globalMsgRegistry->getEditRestrictionInfo( $title->getBaseText() );
+
+        if ( $reason !== null && $user->isAllowed( 'editglobalinterface' ) ) {
+            $result = 'globalmsg-protected';
+            return false;
+        }
+
+		return true;
+	}
 }
