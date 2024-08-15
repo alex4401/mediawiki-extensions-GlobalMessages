@@ -100,6 +100,33 @@ class GlobalMessageRegistry {
         return $msg;
     }
 
+    /**
+     * @param string $msgName Message ID
+     * @return ?string Reason or empty string. Null if not protected.
+     */
+    public function getEditRestrictionInfo( string $msgName ): ?string {
+        $msgList = $this->resolve( 'Globalmsg-protected-messages', '*' );
+        if ( !$msgList ) {
+            return null;
+        }
+
+        foreach ( explode( "\n", $msgList ) as $line ) {
+            if ( !$line || $line[0] !== '*' ) {
+                continue;
+            }
+
+            $line = substr( $line, 1 );
+            $parts = explode( '|', $line );
+            $pMsg = $parts[0] ?? '';
+            $pReason = $parts[1] ?? '';
+            if ( $pMsg === $msgName ) {
+                return $pReason;
+            }
+        }
+
+        return null;
+    }
+
     private function getCacheKey(): string {
         return $this->wanObjectCache->makeGlobalKey(
             'global-messages',
