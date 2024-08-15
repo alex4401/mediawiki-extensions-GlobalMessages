@@ -5,6 +5,7 @@ use Config;
 use ManualLogEntry;
 use MediaWiki\Extension\GlobalMessages\GlobalMessageRegistry;
 use MediaWiki\Linker\LinkTarget;
+use MediaWiki\Page\PageIdentity;
 use MediaWiki\Page\ProperPageIdentity;
 use MediaWiki\Permissions\Authority;
 use MediaWiki\Revision\RevisionRecord;
@@ -41,6 +42,14 @@ final class PageHooks implements
     }
 
 	/**
+	 * @param ProperPageIdentity|LinkTarget $page
+	 * @return bool
+	 */
+	private function canActOnPage( $page ): bool {
+		return $this->isCentralWiki() && $page->getNamespace() === NS_GLOBAL_MESSAGE;
+	}
+
+	/**
 	 * @param ProperPageIdentity $page Page that was deleted.
 	 * @param Authority $deleter Who deleted the page
 	 * @param string $reason Reason the page was deleted
@@ -59,13 +68,11 @@ final class PageHooks implements
 		ManualLogEntry $logEntry,
 		int $archivedRevisionCount
 	) {
-        if ( !$this->isCentralWiki() || $page->getNamespace() !== NS_GLOBAL_MESSAGE ) {
-            return;
+        if ( $this->canActOnPage( $page ) ) {
+			$this->registry->createUpdater()
+				->delete( $pageID )
+				->finalise();
         }
-
-        $this->registry->createUpdater()
-            ->delete( $pageID )
-            ->finalise();
     }
 
 	/**
@@ -82,13 +89,11 @@ final class PageHooks implements
 	public function onArticleUndelete( $title, $create, $comment, $oldPageId,
 		$restoredPages
 	) {
-        if ( !$this->isCentralWiki() || $title->getNamespace() !== NS_GLOBAL_MESSAGE ) {
-            return;
-        }
-
-        $this->registry->createUpdater()
-            ->insert( $title->getId() )
-            ->finalise();
+        if ( $this->canActOnPage( $title ) ) {
+	        $this->registry->createUpdater()
+    	        ->insert( $title->getId() )
+        	    ->finalise();
+		}
     }
 
 	/**
@@ -111,13 +116,11 @@ final class PageHooks implements
 		$revisionRecord,
 		$editResult
 	) {
-        if ( !$this->isCentralWiki() || $wikiPage->getNamespace() !== NS_GLOBAL_MESSAGE ) {
-            return;
-        }
-
-        $this->registry->createUpdater()
-            ->insert( $wikiPage->getId() )
-            ->finalise();
+        if ( $this->canActOnPage( $wikiPage ) ) {
+	        $this->registry->createUpdater()
+    	        ->insert( $wikiPage->getId() )
+        	    ->finalise();
+		}
     }
 
 	/**
@@ -134,12 +137,10 @@ final class PageHooks implements
 	public function onPageMoveComplete( $old, $new, $user, $pageid, $redirid,
 		$reason, $revision
 	) {
-        if ( !$this->isCentralWiki() || $new->getNamespace() !== NS_GLOBAL_MESSAGE ) {
-            return;
-        }
-
-        $this->registry->createUpdater()
-            ->insert( $pageid )
-            ->finalise();
+        if ( $this->canActOnPage( $new ) ) {
+        	$this->registry->createUpdater()
+    	        ->insert( $pageid )
+	            ->finalise();
+		}
     }
 }
