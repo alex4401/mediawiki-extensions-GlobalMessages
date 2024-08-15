@@ -19,7 +19,9 @@ final class PageHooks implements
     \MediaWiki\Page\Hook\PageDeleteCompleteHook,
     \MediaWiki\Page\Hook\ArticleUndeleteHook,
     \MediaWiki\Storage\Hook\PageSaveCompleteHook,
-    \MediaWiki\Hook\PageMoveCompleteHook
+    \MediaWiki\Hook\PageMoveCompleteHook,
+	\MediaWiki\Page\Hook\ArticleProtectCompleteHook,
+	
 {
     /** @var Config */
     private Config $mainConfig;
@@ -143,4 +145,22 @@ final class PageHooks implements
 	            ->finalise();
 		}
     }
+
+	/**
+	 * Update protection reason in the cache table.
+	 *
+	 * @param WikiPage $wikiPage WikiPage that was protected
+	 * @param User $user User who did the protection
+	 * @param array $protect Set of restriction keys
+	 * @param string $reason Reason for protect
+	 * @return bool|void True or no return value to continue or false to abort
+	 */
+	public function onArticleProtectComplete( $wikiPage, $user, $protect, $reason ) {
+        if ( $this->canActOnPage( $wikiPage ) ) {
+			// TODO: handle unprotect
+        	$this->registry->createUpdater()
+    	        ->setRestrictionReason( $wikiPage->getId(), $reason )
+	            ->finalise();
+		}
+	}
 }

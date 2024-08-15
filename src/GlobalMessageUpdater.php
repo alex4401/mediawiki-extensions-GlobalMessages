@@ -36,6 +36,8 @@ class GlobalMessageUpdater {
         $this->messageCachePurges = [];
     }
 
+    // TODO: use transactions
+
     public function insert( int $pageId ): GlobalMessageUpdater {
         if ( $pageId <= 0 ) {
             return $this;
@@ -61,6 +63,7 @@ class GlobalMessageUpdater {
         $pageText = ( $content instanceof TextContent ) ? $content->getText() : '';
 
         // Update the database
+        // TODO: use upsert so we don't destroy any possible current or future data like restriction reason
         $this->delete( $pageId );
         $this->dbw->insert(
             'global_messages_cache',
@@ -81,6 +84,20 @@ class GlobalMessageUpdater {
     public function delete( int $pageId ): GlobalMessageUpdater {
         $this->dbw->delete(
             'global_messages_cache',
+            [
+                'gmc_page_id' => $pageId,
+            ],
+            __METHOD__
+        );
+        return $this;
+    }
+
+    public function setRestrictionReason( int $pageId, ?string $reason ): GlobalMessageUpdater {
+        $this->dbw->update(
+            'global_messages_cache',
+            [
+                'gmc_restriction_reason' => $reason,
+            ],
             [
                 'gmc_page_id' => $pageId,
             ],
