@@ -22,11 +22,6 @@
 	"AvailableRights": [
 		"editglobalinterface"
 	],
-	"GroupPermissions": {
-		"bureaucrat": {
-			"editglobalinterface": true
-		}
-	},
 	"namespaces": [
 		{
 			"id": 1730,
