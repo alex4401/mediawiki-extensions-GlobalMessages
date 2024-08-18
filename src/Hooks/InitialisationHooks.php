@@ -41,7 +41,7 @@ final class InitialisationHooks implements
             $wgGroupPermissions[self::GROUP_ID][self::RIGHT_ID] = true;
             $wgGrantPermissionGroups[self::GRANT_ID] = 'administration';
             $wgGrantRiskGroups[self::GRANT_ID] = 'security';
-            $wgGrantPermissions[self::GRANT_ID] = [ self::RIGHT_ID ];
+            $wgGrantPermissions[self::GRANT_ID] = [ self::RIGHT_ID => true ];
             $wgPrivilegedGroups[] = self::GROUP_ID;
         }
     }
