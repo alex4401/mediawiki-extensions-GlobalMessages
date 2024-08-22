@@ -88,7 +88,7 @@
 		"PageMoveComplete": "PageHooks",
 		"EditFormPreloadText": "EditorHooks",
 		"EditPage__showEditForm_initial": "EditorHooks",
-		"GetUserPermissionsErrors": "EditorHooks"
+		"getUserPermissionsErrors": "EditorHooks"
 	},
 	"config_prefix": "wgGlobalMessages",
 	"config": {
