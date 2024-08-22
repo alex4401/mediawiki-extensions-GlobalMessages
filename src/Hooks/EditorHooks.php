@@ -75,14 +75,15 @@ final class EditorHooks implements
 	 * @return bool|void True or no return value to continue or false to abort
 	 */
 	public function onGetUserPermissionsErrors( $title, $user, $action, &$result ) {
-        if ( $action === 'read' || $title->getNamespace() !== NS_GLOBAL_MESSAGE ) {
+        if ( $action === 'read' || $title->getNamespace() !== NS_MEDIAWIKI ) {
             return true;
         }
 
 		$reason = $this->globalMsgRegistry->getEditRestrictionInfo( $title->getBaseText() );
 
-        if ( $reason !== null && $user->isAllowed( 'editglobalinterface' ) ) {
-            $result = 'globalmsg-protected';
+        if ( $reason !== null && !$user->isAllowed( 'editglobalinterface' ) ) {
+            $result = wfMessage( 'globalmsg-protected' )
+                ->rawParams( $reason ? $reason : wfMessage( 'globalmsg-protected-noreason' ) );
             return false;
         }
 
