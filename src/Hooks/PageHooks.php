@@ -118,7 +118,7 @@ final class PageHooks implements
 	) {
         if ( $this->canActOnPage( $wikiPage ) ) {
 	        $this->registry->createUpdater()
-    	        ->insert( $wikiPage->getId() )
+    	        ->insert( $wikiPage->getId(), $revisionRecord )
         	    ->finalise();
 		}
     }

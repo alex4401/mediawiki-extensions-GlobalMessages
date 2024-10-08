@@ -1,10 +1,12 @@
 <?php
 namespace MediaWiki\Extension\GlobalMessages;
 
+use IDBAccessObject;
 use Language;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionLookup;
+use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
 use TextContent;
 use Title;
@@ -38,7 +40,7 @@ class GlobalMessageUpdater {
 
     // TODO: use transactions
 
-    public function insert( int $pageId ): GlobalMessageUpdater {
+    public function insert( int $pageId, ?RevisionRecord $revision = null ): GlobalMessageUpdater {
         if ( $pageId <= 0 ) {
             return $this;
         }
@@ -54,8 +56,10 @@ class GlobalMessageUpdater {
             $pageLang = '*';
         }
 
-        // Fetch the contents
-        $revision = $this->revisionLookup->getRevisionByPageId( $pageId );
+        // Fetch the contents, unless a revision has already been provided for us
+        if ( $revision === null ) {
+            $revision = $this->revisionLookup->getRevisionByPageId( $pageId );
+        }
         if ( !$revision ) {
             return $this;
         }
