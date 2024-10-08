@@ -58,7 +58,7 @@ class GlobalMessageUpdater {
 
         // Fetch the contents, unless a revision has already been provided for us
         if ( $revision === null ) {
-            $revision = $this->revisionLookup->getRevisionByPageId( $pageId );
+            $revision = $this->revisionLookup->getRevisionByPageId( $pageId, 0, IDBAccessObject::READ_LATEST );
         }
         if ( !$revision ) {
             return $this;
