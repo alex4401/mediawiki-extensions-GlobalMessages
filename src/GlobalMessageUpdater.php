@@ -8,8 +8,8 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionLookup;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
+use MediaWiki\Title\Title;
 use TextContent;
-use Title;
 use Wikimedia\Rdbms\IDatabase;
 
 class GlobalMessageUpdater {
@@ -38,14 +38,29 @@ class GlobalMessageUpdater {
         $this->messageCachePurges = [];
     }
 
-    // TODO: use transactions
-
-    public function insert( int $pageId, ?RevisionRecord $revision = null ): GlobalMessageUpdater {
+    public function insertByPageId( int $pageId, ?RevisionRecord $revision = null ): GlobalMessageUpdater {
         if ( $pageId <= 0 ) {
             return $this;
         }
 
-        $title = Title::newFromID( $pageId );
+        $title = Title::newFromID( $pageId, IDBAccessObject::READ_LATEST );
+        if ( $title === null ) {
+            return $this;
+        }
+
+        return $this->insertInternal( $title, $revision );
+    }
+
+    public function insertByTitle( Title $title, ?RevisionRecord $revision = null ): GlobalMessageUpdater {
+        return $this->insertInternal( $title, $revision );
+    }
+
+    // TODO: use transactions
+
+    private function insertInternal( Title $title, ?RevisionRecord $revision = null ): GlobalMessageUpdater {
+        if ( !$title->exists() ) {
+            return $this;
+        }
 
         // Fetch message name and language code
         $pageName = $title->getText();
@@ -58,7 +73,7 @@ class GlobalMessageUpdater {
 
         // Fetch the contents, unless a revision has already been provided for us
         if ( $revision === null ) {
-            $revision = $this->revisionLookup->getRevisionByPageId( $pageId, 0, IDBAccessObject::READ_LATEST );
+            $revision = $this->revisionLookup->getRevisionByTitle( $title, 0, IDBAccessObject::READ_LATEST );
         }
         if ( !$revision ) {
             return $this;
@@ -67,11 +82,11 @@ class GlobalMessageUpdater {
         $pageText = ( $content instanceof TextContent ) ? $content->getText() : '';
 
         // Update the database
-        $this->delete( $pageId );
+        $this->delete( $title->getId() );
         $this->dbw->insert(
             'global_messages_cache',
             [
-                'gmc_page_id' => $pageId,
+                'gmc_page_id' => $title->getId(),
                 'gmc_name' => $pageName,
                 'gmc_lang' => $pageLang,
                 'gmc_text' => $pageText,

@@ -1,8 +1,8 @@
 <?php
 namespace MediaWiki\Extension\GlobalMessages\Hooks;
 
-use Config;
 use ManualLogEntry;
+use MediaWiki\Config\Config;
 use MediaWiki\Extension\GlobalMessages\GlobalMessageRegistry;
 use MediaWiki\Linker\LinkTarget;
 use MediaWiki\Page\PageIdentity;
@@ -11,8 +11,8 @@ use MediaWiki\Permissions\Authority;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Storage\EditResult;
 use MediaWiki\User\UserIdentity;
-use Title;
-use WikiMap;
+use MediaWiki\Title\Title;
+use MediaWiki\WikiMap\WikiMap;
 use WikiPage;
 
 final class PageHooks implements
@@ -91,7 +91,7 @@ final class PageHooks implements
 	) {
         if ( $this->canActOnPage( $title ) ) {
 	        $this->registry->createUpdater()
-    	        ->insert( $title->getId() )
+    	        ->insertByTitle( $title )
         	    ->finalise();
 		}
     }
@@ -118,7 +118,7 @@ final class PageHooks implements
 	) {
         if ( $this->canActOnPage( $wikiPage ) ) {
 	        $this->registry->createUpdater()
-    	        ->insert( $wikiPage->getId(), $revisionRecord )
+    	        ->insertByTitle( $wikiPage->getTitle(), $revisionRecord )
         	    ->finalise();
 		}
     }
@@ -139,7 +139,7 @@ final class PageHooks implements
 	) {
         if ( $this->canActOnPage( $new ) ) {
         	$this->registry->createUpdater()
-    	        ->insert( $pageid )
+    	        ->insertByPageId( $pageid )
 	            ->finalise();
 		}
     }
