@@ -1,6 +1,7 @@
 <?php
 namespace MediaWiki\Extension\GlobalMessages\Hooks;
 
+use DatabaseUpdater;
 use WikiMap;
 
 final class UpdaterHooks implements
@@ -18,7 +19,7 @@ final class UpdaterHooks implements
             return true;
         }
 
-		$dbType = $db->getType();
+		$dbType = $updater->getDB()->getType();
 		$dir = dirname( __DIR__ ) . "/schema/$dbType";
 
         $updater->addExtensionTable(
