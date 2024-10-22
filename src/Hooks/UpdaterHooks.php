@@ -18,9 +18,12 @@ final class UpdaterHooks implements
             return true;
         }
 
+		$dbType = $db->getType();
+		$dir = dirname( __DIR__ ) . "/schema/$dbType";
+
         $updater->addExtensionTable(
             'global_messages_cache',
-            __DIR__ . '/../../schema/global_messages_cache.sql'
+            "$dir/table-global_messages_cache.sql"
         );
 
         return true;
